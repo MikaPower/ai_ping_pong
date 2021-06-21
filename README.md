@@ -19,6 +19,9 @@
       <a href="#about-the-project">About The Project</a>
     </li>
     <li>
+          <a href="#datasets">Datasets</a>
+    </li>
+    <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
@@ -42,11 +45,11 @@
 This project contains 2 main datasets acquired using a robot in table tenis as well 4 ML Models.
 
 The ML models are the following:
-* Feedforward neural network - notebook3540fc5853.ipynb
 * LSTM - Long Short-Term Memory Recurrent Neural Network - `LSTM.py`
 * CNN-LSTM - one-dimensional Convolutional Neural Network LSTM - `CNN-LSTM.py`
 * ConvLSTM - one-dimensional Convolutional LSTM - `convLSTM.py`
 
+##Datasets
 
 On the datasets folders its possible to find the following specifications:
 
