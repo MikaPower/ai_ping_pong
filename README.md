@@ -49,7 +49,7 @@ The ML models are the following:
 * CNN-LSTM - one-dimensional Convolutional Neural Network LSTM - `CNN-LSTM.py`
 * ConvLSTM - one-dimensional Convolutional LSTM - `convLSTM.py`
 
-##Datasets
+## Datasets
 
 On the datasets folders its possible to find the following specifications:
 
