@@ -1,7 +1,10 @@
 # cnn lstm model
 import itertools
 import os
+from datetime import datetime
+import tensorflow as tf
 import coremltools as ct
+import numpy as np
 
 from tensorflow.keras.utils import to_categorical
 from numpy import mean
@@ -43,10 +46,10 @@ def load_group(filenames, prefix=''):
 def load_dataset_group():
     # load all 6 files as a single array
     # total acceleration
-    filenames = os.listdir('datasets/LSTM dataset/')
+    filenames = os.listdir('merged-dataset/')
     axxis = {'x': [], 'y': []}
     for file in filenames:
-        df = read_csv('datasets/LSTM dataset/' + file)
+        df = read_csv('merged-dataset/' + file)
 
         dataset = df.values
 
@@ -65,6 +68,9 @@ def load_dataset_group():
 def load_dataset(prefix=''):
     # load all train
     X, Y = load_dataset_group()
+
+    unique, counts = np.unique(Y, return_counts=True)
+    print('samples per id:',dict(zip(unique, counts)))
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33, random_state=5)
     Y_train = to_categorical(Y_train)
     Y_test = to_categorical(Y_test)
@@ -74,8 +80,11 @@ def load_dataset(prefix=''):
 
 # fit and evaluate a model
 def evaluate_model(trainX, trainy, testX, testy, count):
+
+    logdir="CNN-LSTM/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=1)
     # define model
-    verbose, epochs, batch_size = 1, 25, 64
+    verbose, epochs, batch_size = 1, 25, 16
     n_timesteps, n_features, n_outputs = trainX.shape[1], trainX.shape[2], trainy.shape[1]
     # reshape data into time steps of sub-sequences
     n_steps, n_length = 1, 46
@@ -92,11 +101,11 @@ def evaluate_model(trainX, trainy, testX, testy, count):
     model.add(Dropout(0.5))
     model.add(Dense(100, activation='relu'))
     model.add(Dense(n_outputs, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy',tf.keras.metrics.Recall(),tf.keras.metrics.Precision()])
     # fit network
-    model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, verbose=verbose)
+    model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, verbose=verbose,callbacks=[tensorboard_callback])
     # evaluate model
-    _, accuracy = model.evaluate(testX, testy, batch_size=batch_size, verbose=0)
+    _, accuracy, recall,precision = model.evaluate(testX, testy, batch_size=batch_size, verbose=0)
     confusion_matrix_and_stats(model, testX, testy)
     save_model(model, count,testX)
     return accuracy
@@ -110,8 +119,8 @@ def confusion_matrix_and_stats(model, testX, testy):
     from sklearn.metrics import confusion_matrix
     CM = confusion_matrix(y_true, pred, labels=[0, 1, 2, 3, 4, 5])
     from mlxtend.plotting import plot_confusion_matrix
-    fig, ax = plot_confusion_matrix(conf_mat=CM, figsize=(10, 5), class_names=['td', 'te', 'b', 'fd', 'fe', 'r'])
-    plt.title("LSTM-CNN")
+    fig, ax = plot_confusion_matrix(conf_mat=CM, figsize=(10, 5), class_names=['tsf', 'tsb', 'b', 'ff', 'fb', 'r'])
+    plt.title("CNN-LSTM")
     plt.show()
     from sklearn.metrics import classification_report, accuracy_score, f1_score
     print(classification_report(y_true, pred))
@@ -130,7 +139,7 @@ def save_model(model, count,textX):
         # set general model metadata
         mlmodel.author = 'Nuno Ferreira'
         #mlmodel.license = 'BSD'
-        mlmodel.short_description = 'Predicts the movement of a player during a ping pong game'
+        mlmodel.short_description = 'Predicts the movement of a player during a table tenis game'
         mlmodel.save("pingPong.mlmodel",)
         #mlmodel.predict(textX[0])
 
