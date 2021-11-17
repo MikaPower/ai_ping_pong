@@ -46,10 +46,10 @@ def load_group(filenames, prefix=''):
 def load_dataset_group():
     # load all 6 files as a single array
     # total acceleration
-    filenames = os.listdir('merged-dataset/')
+    filenames = os.listdir('CNN-LSTM/D5-fast-slow-cut/')
     axxis = {'x': [], 'y': []}
     for file in filenames:
-        df = read_csv('merged-dataset/' + file)
+        df = read_csv('CNN-LSTM/D5-fast-slow-cut/' + file)
 
         dataset = df.values
 
@@ -119,6 +119,7 @@ def confusion_matrix_and_stats(model, testX, testy):
     from sklearn.metrics import confusion_matrix
     CM = confusion_matrix(y_true, pred, labels=[0, 1, 2, 3, 4, 5])
     from mlxtend.plotting import plot_confusion_matrix
+    #Shortcuts for movements
     fig, ax = plot_confusion_matrix(conf_mat=CM, figsize=(10, 5), class_names=['tsf', 'tsb', 'b', 'ff', 'fb', 'r'])
     plt.title("CNN-LSTM")
     plt.show()

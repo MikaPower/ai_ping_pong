@@ -5,9 +5,9 @@ from shutil import copyfile
 
 
 def create_test_and_train_sets():
-    path = 'datasets/createML/slow_&_fast_backup_with_cut_movements/classes/'
-    train_path = 'datasets/createML/slow_&_fast_dataset_with_cut_movements_separated/train/'
-    test_path = 'datasets/createML/slow_&_fast_dataset_with_cut_movements_separated/test/'
+    path = 'datasets/CreateML/D5-fast-slow-cut-same-folder/classes/'
+    train_path = 'datasets/CreateML/D5-fast-slow-cut/train/'
+    test_path = 'datasets/CreateML/D5-fast-slow-cut/test/'
     mov_dir = os.listdir(path)
     for mov in mov_dir:
         files = os.listdir(path + mov)

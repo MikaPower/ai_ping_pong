@@ -46,7 +46,7 @@ def load_group(filenames, prefix=''):
 def load_dataset_group():
     # load all 6 files as a single array
     # total acceleration
-    filenames = os.listdir('merged-dataset/')
+    filenames = os.listdir('convLSTM/D5-fast-slow-cut/')
     axxis = {'x': [], 'y': []}
     for file in filenames:
         df = read_csv('merged-dataset/' + file)

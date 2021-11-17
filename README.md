@@ -40,23 +40,19 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This project contains 2 main datasets acquired using a robot in table tenis as well 4 ML Models.
+This project contains 2 main datasets acquired using a robot in table tennis and allows the creation of 3 ML Models.
 
 The ML models are the following:
-* LSTM - Long Short-Term Memory Recurrent Neural Network - `LSTM.py`
+* Create ML - Apple's Machine learning tool
 * CNN-LSTM - one-dimensional Convolutional Neural Network LSTM - `CNN-LSTM.py`
 * ConvLSTM - one-dimensional Convolutional LSTM - `convLSTM.py`
 
 ## Datasets
-
 On the datasets folders its possible to find the following specifications:
-
-* createML
-* LSTM dataset
-* raw
-
+* Raw
+* Pre-processed
 
 ###Raw
 The raw folder is where the files have not been touched or altered in anyway.
@@ -69,41 +65,67 @@ Each file represents a session with an athlete where it was asked to do the resp
 movement until the robot had no more balls to shoot.
 
 
-### createML
-On this folder is possible to find 3 variants created from the raw dataset ready to copy and paste on createML
-Fast_dataset
+###Pre-processed
+On this folder is possible to find 2 raw datasets plus 3 pre-processed created from the raw dataset ready to copy and paste on createML
+
+####D1-fast
+* Composed by data from the fast dataset from RAW
 * unnecessary data removed
 * renamed columns  
 * timestamp column was converted as starting from zero
 * train and test data randomly separated
 
-Slow_dataset
+#####D2-slow
 * Same features as the fast dataset but instead using the slow dataset from raw data.
 
-slow_&_fast_backup_with_cut_movements
-
-
-This dataset merges both slow and fast dataset from raw data. Then a movement detection algorithm 
-was applied (if forces on any axxis were greater then 1m/s then create a prediction windows) and a windows prediction
+#####D3-fast-cut
+This dataset contains the data from D1-fast dataset. Then a stroke detection algorithm 
+was applied (if forces on any axis were greater then 1m/s then create a prediction windows) and a windows prediction
 of size 46 was cut for every possible movement detected.
-This dataset contains a folder for each type of movement and each movement folder (except rest) contains multiple files in which a file
+This dataset contains a folder for each type of movement and each movement folder contains multiple files in which a file
 represents the corresponding movement.
-The rest files are the same from the raw dataset.
 
-* Slow and fast dataset from raw data merged togheter
-* Movement detection algorith applied.
+For the rest class, samples were obtained from the stroke algorithm for each time no stroke was being detected.
+
+
+* Same data as D1-fast
+* Movement detection algorithm applied.
 * Renamed columns  
-* Timestamp column was converted as starting from zero
+* Timestamp column converted as starting from zero
 
 slow_&_fast_dataset_with_cut_movements_separated
+
+#####D4-slow-cut
+This dataset contains the data from D2-slow dataset. The same stroke detection algorithm was applied
+
+* Same data as D2-slow
+* Movement detection algorithm applied.
+* Renamed columns  
+* Timestamp column converted as starting from zero
+
+
+
+#####D5-fast-slow-cut
+This dataset merges both D3-fast-cut and D4-slow-cut. 
+* D3-fast-cut and D4-slow-cut from raw data merged together
+* Movement detection algorithm applied.
+* Renamed columns  
+* Timestamp column converted as starting from zero
 
 
 Dataset where files are separated into train and test folders (80%, 20%) using `train_test_sep_data.py`
 which sorts all the files by class randomly. 
 
 
-### LSTM dataset
-This folder contains a file for every axis represented on an accelerometer and gyroscope sensor.
+## ML Models
+### CreateML
+On this folder is possible to find the 5 pre-processed datasets created from the raw dataset ready to copy and paste on createML.
+
+
+### CNN-LSTM
+This folder contains only D3-fast, D4-slow and D5-fast-slow-cut were used. These datasets were used to generate the CNN-LSTM model
+Then for each dataset, a further pre-processing was applied to fit the model requirements.
+For each dataset folder, the folder contains a file for every axis represented on an accelerometer and gyroscope sensor.
 Each file has multiple rows with 47 columns where the first 46 represents sensor data of the 
 respective axxis and sensor and the last class represents the movement id corresponding to sensor data
    * "right_top_spin" = 0 
@@ -113,22 +135,14 @@ respective axxis and sensor and the last class represents the movement id corres
    * "left_flip" = 4, 
    * "rest" = 5
    
- Each row of the files is sensor data extracted from the raw dataset 
- in which a movement detection algorithm was applied (if forces greater then 1m/s then create prection windows) and a windows prediction of size 46
- was taken and made it in a row.
- 46 is the number of samples in which a movement can occur where minimal noise 
- will exist and full extend of the movement can be seen.
- 
- It was done in this way due to how LSTM Neural networks process data.
- The rest sensor values was the collection of samples in which the movement 
- detection algorithm was not detecting any movement.
-    
- The code for the algorith applied to the raw dataset can be seen here: 
- Link do github:
- 
- 
+###ConvLSTM
+The same folder structure as CNN-LSTM. 
 
-* [R](https://www.r-project.org/)
+
+ The code for the algorithm applied to the raw dataset can be seen here: 
+ Github link:
+ TO-DO
+<!--* [R](https://www.r-project.org/)-->
 
 
 
@@ -177,7 +191,10 @@ Run the any of the ML Models
    python3 convLSTM.py
    ```
 
-
+To change the dataset for the CNN-LSTM and convLSTM models, just change the directory on function
+```
+def load_dataset_group():
+```
 <!-- CONTRIBUTING -->
 ## Contributing
 
