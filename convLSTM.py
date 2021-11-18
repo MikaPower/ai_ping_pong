@@ -49,7 +49,7 @@ def load_dataset_group():
     filenames = os.listdir('convLSTM/D5-fast-slow-cut/')
     axxis = {'x': [], 'y': []}
     for file in filenames:
-        df = read_csv('merged-dataset/' + file)
+        df = read_csv('convLSTM/D5-fast-slow-cut/' + file)
 
         dataset = df.values
 
@@ -74,7 +74,7 @@ def load_dataset(prefix=''):
     return X_train, Y_train, X_test, Y_test
 
 # fit and evaluate a model
-def evaluate_model(trainX, trainy, testX, testy):
+def evaluate_model(trainX, trainy, testX, testy,count):
 
     logdir="convLSTM/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=0,)
@@ -99,6 +99,8 @@ def evaluate_model(trainX, trainy, testX, testy):
     # evaluate model
     _, accuracy, recall,precision = model.evaluate(testX, testy, batch_size=batch_size, verbose=0)
     confusion_matrix_and_stats(model, testX, testy)
+    save_model(model, count)
+
     return accuracy
 
 
@@ -124,14 +126,30 @@ def summarize_results(scores):
     m, s = mean(scores), std(scores)
     print('Accuracy: %.3f%% (+/-%.3f)' % (m, s))
 
+
+def save_model(model, count):
+    if count < 1:
+        model.save('tf_keras_model_conv_lstm')
+        class_labels = ['top_spin_direita','top_spin_esquerda','bloco','flip_direita','flip_esquerda','rest']
+        classifier_config = ct.ClassifierConfig(class_labels)
+
+        mlmodel = ct.convert('tf_keras_model_conv_lstm',classifier_config=classifier_config)
+
+        # set general model metadata
+        mlmodel.author = 'Nuno Ferreira'
+        #mlmodel.license = 'BSD'
+        mlmodel.short_description = 'Predicts the movement of a player during a table tenis game'
+        mlmodel.save("pingPongConv.mlmodel",)
+        #mlmodel.predict(textX[0])
+
 # run an experiment
-def run_experiment(repeats=10):
+def run_experiment(repeats=1):
     # load data
     trainX, trainy, testX, testy = load_dataset()
     # repeat experiment
     scores = list()
     for r in range(repeats):
-        score = evaluate_model(trainX, trainy, testX, testy)
+        score = evaluate_model(trainX, trainy, testX, testy,r)
         score = score * 100.0
         print('>#%d: %.3f' % (r+1, score))
         scores.append(score)

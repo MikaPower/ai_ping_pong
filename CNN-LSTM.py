@@ -78,9 +78,10 @@ def load_dataset(prefix=''):
     return X_train, Y_train, X_test, Y_test
 
 
+
+
 # fit and evaluate a model
 def evaluate_model(trainX, trainy, testX, testy, count):
-
     logdir="CNN-LSTM/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=1)
     # define model

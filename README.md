@@ -61,7 +61,7 @@ One fast dataset where a robot would send a ball every 1.166 seconds and a
 slow dataset where the robot would send a ball every 1.74 seconds.
 Each of this types has 6 classes representing each movement (rest, right top spin, left top spin, 
 block, right flip, left flip.)
-Each file represents a session with an athlete where it was asked to do the respective 
+Each file represents a session with an athlete where it was asked to do thepip install --pre -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy respective 
 movement until the robot had no more balls to shoot.
 
 
